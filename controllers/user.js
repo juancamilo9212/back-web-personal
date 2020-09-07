@@ -159,11 +159,108 @@ fs.exists(filePath, exists =>{
 
 }
 
+ async function updateUser(req,res){
+    let userData=req.body;
+    userData.email=req.body.email.toLowerCase();
+    const params=req.params;
+
+    if(userData.password){
+       await bcrypt.hash(userData.password,null,null,(err,hash) =>{
+    if(err){
+        res.status(500).send({message: "Error al encriptar la contraseña"})
+    }else{
+        userData.password=hash;
+    }
+        });
+    }
+
+    User.findByIdAndUpdate({_id: params.id},userData,(err,userUpdate)=>{
+        if(err){
+            res.status(500).send({message: "Error de servidor"})
+        }else{
+            if(!userUpdate){
+            res.status(404).send({message: "Usuario no encontrado"})
+            }else{
+                res.status(200).send({message: "Usuario actualizado correctamente"});
+            }
+            }
+    });
+}
+
+function activateUser(req,res){
+const {id}=req.params;
+const {active}=req.query;
+User.findByIdAndUpdate(id,{active},(err,userData) =>{
+    if(err){
+        res.status(500).send({message: "Error del servidor"});
+    }else{
+        if(!userData){
+            res.status(404).send({message: "Usuario no encontrado"});
+        }else{
+            res.status(200).send({message: "Usuario actualizado correctamente"});
+        }
+        }
+})
+
+}
+
+function deleteUser(req,res){
+    const {id}=req.params;
+    User.findByIdAndDelete(id,(err,userData) => {
+        if(err){
+            res.status(500).send({message: "Error del servidor"});
+        }else{
+            if(!userData){
+                res.status(404).send({message: "Usuario no encontrado"});
+            }else{
+                res.status(200).send({message:"Usuario eliminado correctamente"});
+            }
+        }
+    });
+}
+
+function createUser(req,res){
+const user = new User();
+const {name, lastName, email, role, password}=req.body;
+user.name= name;
+user.lastName=lastName;
+user.email=email.toLowerCase();
+user.active=true;
+user.role=role;
+
+if(!password){
+    res.status(500).send({message: "La contraseña es obligatoria"})
+}else{
+    bcrypt.hash(password,null,null,(err,hash) => {
+        if(err){
+            res.status(500).send({message: "Error al encriptar la contraseña"})
+        }else{
+            user.password=hash;
+            user.save((err,userStored) => {
+                if(err){
+                    res.status(500).send({message:"El usuario ya existe"});
+                }else{
+                    if(!userStored){
+                        res.status(500).send({message: "Error al crear el nuevo usuario"})
+                    }else{
+                        res.status(200).send({message: "Usuario creado correctamente"})
+                    }
+                }
+            })
+        }
+})
+}
+}
+
 module.exports={
     signUp,
     signIn,
     getUsers,
     getActiveUsers,
     loadAvatar,
-    getAvatar
+    getAvatar,
+    updateUser,
+    activateUser,
+    deleteUser,
+    createUser
 };
