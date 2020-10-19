@@ -9,6 +9,7 @@ const authRoutes=require('./routers/auth');
 const menuRoutes=require('./routers/menu');
 const newsLetterRoutes=require('./routers/newsletter');
 const coursesRoutes=require('./routers/courses');
+const postRoutes=require('./routers/post');
 
 
 
@@ -33,5 +34,6 @@ app.use(`/api/${API_VERSION}`,userRoutes);
 app.use(`/api/${API_VERSION}`,menuRoutes);
 app.use(`/api/${API_VERSION}`,newsLetterRoutes);
 app.use(`/api/${API_VERSION}`,coursesRoutes);
+app.use(`/api/${API_VERSION}`,postRoutes);
 
 module.exports=app;

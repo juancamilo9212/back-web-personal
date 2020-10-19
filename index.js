@@ -1,3 +1,4 @@
+
 const mongoose =require("mongoose");
 const app = require('./app');
 const port=process.env.PORT || 3977;
@@ -5,7 +6,10 @@ const port=process.env.PORT || 3977;
 const {API_VERSION,IP_SERVER,PORT_DB}=require("./config");
 
 mongoose.set("useFindAndModify",false);
-mongoose.connect(`mongodb://${IP_SERVER}:${PORT_DB}/miPrimeraWeb`,{useNewUrlParser:true,useUnifiedTopology: true},(err,res)=>{
+mongoose.connect(
+    //`mongodb://${IP_SERVER}:${PORT_DB}/miPrimeraWeb`,
+    `mongodb+srv://juancamilo9212:Mecatronica9212@cluster0.ycxdk.mongodb.net/<dbname>?retryWrites=true&w=majority`,
+    {useNewUrlParser:true,useUnifiedTopology: true},(err,res)=>{
     if(err){
         throw err;
     }else{
